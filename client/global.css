@@ -1,0 +1,121 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 48 100% 98%; /* Creamy White #FFFDF0 */
+    --foreground: 0 45% 15%; /* Deep Maroon #360E0E */
+
+    --card: 48 100% 99%;
+    --card-foreground: 0 45% 15%;
+
+    --popover: 48 100% 98%;
+    --popover-foreground: 0 45% 15%;
+
+    --primary: 28 100% 55%; /* Saffron #FF9933 */
+    --primary-foreground: 48 100% 98%;
+
+    --secondary: 45 60% 50%; /* Antique Gold #C5A021 */
+    --secondary-foreground: 0 45% 15%;
+
+    --muted: 48 30% 90%;
+    --muted-foreground: 0 20% 40%;
+
+    --accent: 0 75% 25%; /* Maroon #800000 */
+    --accent-foreground: 48 100% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 45 40% 85%;
+    --input: 45 40% 85%;
+    --ring: 28 100% 55%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 48 100% 97%;
+    --sidebar-foreground: 0 45% 15%;
+    --sidebar-primary: 28 100% 55%;
+    --sidebar-primary-foreground: 48 100% 98%;
+    --sidebar-accent: 45 60% 50%;
+    --sidebar-accent-foreground: 0 45% 15%;
+    --sidebar-border: 45 40% 85%;
+    --sidebar-ring: 28 100% 55%;
+  }
+
+  .dark {
+    --background: 0 45% 8%;
+    --foreground: 48 100% 95%;
+
+    --card: 0 45% 10%;
+    --card-foreground: 48 100% 95%;
+
+    --popover: 0 45% 8%;
+    --popover-foreground: 48 100% 95%;
+
+    --primary: 28 100% 55%;
+    --primary-foreground: 0 45% 10%;
+
+    --secondary: 45 60% 45%;
+    --secondary-foreground: 48 100% 95%;
+
+    --muted: 0 45% 15%;
+    --muted-foreground: 48 30% 70%;
+
+    --accent: 45 60% 50%;
+    --accent-foreground: 0 45% 8%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 48 100% 95%;
+
+    --border: 0 45% 20%;
+    --input: 0 45% 20%;
+    --ring: 28 100% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cinzel', serif;
+  }
+
+  .spiritual-pattern {
+    background-image: radial-gradient(circle at 2px 2px, hsl(var(--secondary) / 0.1) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  .glass-card {
+    @apply bg-white/40 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+
+  .glow-saffron {
+    box-shadow: 0 0 20px -5px hsl(var(--primary) / 0.5);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 20px -5px hsl(var(--secondary) / 0.5);
+  }
+
+  :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre,
+  code {
+    overflow-x: auto;
+    white-space: pre;
+  }
+}
