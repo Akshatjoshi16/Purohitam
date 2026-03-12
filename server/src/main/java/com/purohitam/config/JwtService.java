@@ -17,6 +17,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 
+    // GENERATE TOKEN
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
@@ -26,12 +27,27 @@ public class JwtService {
                 .compact();
     }
 
+    // EXTRACT EMAIL
     public String extractEmail(String token) {
+        return extractClaims(token).getSubject();
+    }
+
+    // EXTRACT CLAIMS
+    private Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+    }
+
+    // VALIDATE TOKEN
+    public boolean isTokenValid(String token) {
+        try {
+            extractClaims(token);
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
     }
 }

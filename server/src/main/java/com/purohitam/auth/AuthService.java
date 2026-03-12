@@ -1,7 +1,6 @@
 package com.purohitam.auth;
 
 import com.purohitam.config.JwtService;
-import com.purohitam.user.Role;
 import com.purohitam.user.User;
 import com.purohitam.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,44 +18,29 @@ public class AuthService {
     // ==========================
     // SIGNUP
     // ==========================
-    public AuthResponse signup(SignupRequest request) {
+    public AuthResponse signup(SignupRequest request){
 
-        // Check duplicate email
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already registered");
+        if(userRepository.existsByEmail(request.getEmail())){
+            throw new RuntimeException("Email already exists");
         }
 
-        // Check duplicate phone
-        if (userRepository.existsByPhone(request.getPhone())) {
-            throw new RuntimeException("Phone already registered");
-        }
-
-        // Assign role
-        // IMPORTANT: In production, admin should be created manually.
-        Role role = request.getEmail().equals("admin@purohitam.com")
-                ? Role.ADMIN
-                : Role.USER;
-
-        // Create user
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
                 .phone(request.getPhone())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(role)
+                .role("USER")
                 .build();
 
         userRepository.save(user);
 
-        // Generate JWT
         String token = jwtService.generateToken(user.getEmail());
 
-        // Return response (using builder to avoid constructor order issues)
         return AuthResponse.builder()
                 .token(token)
                 .name(user.getName())
                 .email(user.getEmail())
-                .role(user.getRole().name())
+                .role(user.getRole())
                 .build();
     }
 
@@ -78,7 +62,7 @@ public class AuthService {
                 .token(token)
                 .name(user.getName())
                 .email(user.getEmail())
-                .role(user.getRole().name())
+                .role(user.getRole())
                 .build();
     }
 }
