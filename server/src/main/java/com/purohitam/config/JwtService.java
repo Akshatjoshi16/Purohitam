@@ -10,30 +10,38 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private final String SECRET = "mysecretkeymysecretkeymysecretkey12345";
-    private final long EXPIRATION = 1000 * 60 * 60 * 24;
+    private static final String SECRET_KEY = "mysecretkeymysecretkeymysecretkey12345";
+    private static final long EXPIRATION = 1000 * 60 * 60 * 24; // 24 hours
 
     private Key getSignKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    // GENERATE TOKEN
+    // =========================
+    // Generate JWT Token
+    // =========================
     public String generateToken(String email) {
+
         return Jwts.builder()
                 .setSubject(email)
-                .setIssuedAt(new Date())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // EXTRACT EMAIL
+    // =========================
+    // Extract Email
+    // =========================
     public String extractEmail(String token) {
-        return extractClaims(token).getSubject();
+        return extractAllClaims(token).getSubject();
     }
 
-    // EXTRACT CLAIMS
-    private Claims extractClaims(String token) {
+    // =========================
+    // Extract Claims
+    // =========================
+    private Claims extractAllClaims(String token) {
+
         return Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()
@@ -41,12 +49,31 @@ public class JwtService {
                 .getBody();
     }
 
-    // VALIDATE TOKEN
+    // =========================
+    // Check Expiration
+    // =========================
+    private boolean isTokenExpired(String token) {
+        return extractAllClaims(token)
+                .getExpiration()
+                .before(new Date());
+    }
+
+    // =========================
+    // Validate Token
+    // =========================
+    public boolean isTokenValid(String token, String email) {
+
+        final String tokenEmail = extractEmail(token);
+
+        return (tokenEmail.equals(email) && !isTokenExpired(token));
+    }
+
+    // Optional simple validation
     public boolean isTokenValid(String token) {
+
         try {
-            extractClaims(token);
-            return true;
-        } catch (JwtException e) {
+            return !isTokenExpired(token);
+        } catch (Exception e) {
             return false;
         }
     }

@@ -2,6 +2,7 @@ package com.purohitam.admin;
 
 import com.purohitam.booking.Booking;
 import com.purohitam.booking.BookingService;
+import com.purohitam.booking.BookingStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +12,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
 public class AdminController {
 
     private final BookingService bookingService;
 
+    // ==========================
     // GET ALL BOOKINGS
+    // ==========================
     @GetMapping("/bookings")
     public ResponseEntity<List<Booking>> getAllBookings() {
 
@@ -25,20 +27,24 @@ public class AdminController {
         );
     }
 
+    // ==========================
     // APPROVE BOOKING
+    // ==========================
     @PutMapping("/approve/{id}")
-    public ResponseEntity<?> approveBooking(@PathVariable Long id) {
+    public ResponseEntity<String> approveBooking(@PathVariable Long id) {
 
-        bookingService.updateStatus(id,"APPROVED");
+        bookingService.updateStatus(id, BookingStatus.APPROVED);
 
         return ResponseEntity.ok("Booking approved");
     }
 
+    // ==========================
     // REJECT BOOKING
+    // ==========================
     @PutMapping("/reject/{id}")
-    public ResponseEntity<?> rejectBooking(@PathVariable Long id) {
+    public ResponseEntity<String> rejectBooking(@PathVariable Long id) {
 
-        bookingService.updateStatus(id,"REJECTED");
+        bookingService.updateStatus(id, BookingStatus.REJECTED);
 
         return ResponseEntity.ok("Booking rejected");
     }

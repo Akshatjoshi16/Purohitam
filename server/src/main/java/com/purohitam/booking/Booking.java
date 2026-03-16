@@ -1,7 +1,12 @@
 package com.purohitam.booking;
 
+import com.purohitam.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -23,13 +28,21 @@ public class Booking {
 
     private String pooja;
 
-    private String date;
+    private LocalDate date;
 
-    private String time;
+    private LocalTime time;
 
     private String location;
 
     private String instructions;
 
-    private String status;   // PENDING / APPROVED / REJECTED
+    @Enumerated(EnumType.STRING)
+    private BookingStatus status;
+
+    private LocalDateTime createdAt;
+
+    // Relation with user
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

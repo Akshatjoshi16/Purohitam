@@ -3,6 +3,7 @@ package com.purohitam.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +19,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    //private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -31,22 +33,22 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        // Booking requires login
+                        // Booking requires authentication
                         .requestMatchers("/api/bookings/**").authenticated()
 
                         // Admin endpoints
                         .requestMatchers("/api/admin/**").authenticated()
 
-                        // everything else allowed
-                        .anyRequest().permitAll()
+                        // All other requests
+                        .anyRequest().authenticated()
                 )
 
-                // JWT uses stateless session
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // Add JWT filter before Spring authentication
+                //.authenticationProvider(authenticationProvider)
+
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

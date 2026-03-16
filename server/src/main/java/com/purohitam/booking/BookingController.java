@@ -1,5 +1,6 @@
 package com.purohitam.booking;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/bookings")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
 public class BookingController {
 
     private final BookingService bookingService;
@@ -19,20 +19,22 @@ public class BookingController {
     // CREATE BOOKING
     // ==========================
     @PostMapping
-    public ResponseEntity<?> createBooking(@RequestBody Booking booking) {
+    public ResponseEntity<Booking> createBooking(
+            @Valid @RequestBody BookingRequest request
+    ) {
 
-        System.out.println("Booking received: " + booking.getName());
+        Booking booking = bookingService.createBooking(request);
 
-        Booking savedBooking = bookingService.createBooking(booking);
-
-        return ResponseEntity.ok(savedBooking);
+        return ResponseEntity.ok(booking);
     }
 
     // ==========================
-    // GET BOOKINGS FOR USER
+    // GET USER BOOKINGS
     // ==========================
     @GetMapping("/user/{email}")
-    public ResponseEntity<List<Booking>> getUserBookings(@PathVariable String email) {
+    public ResponseEntity<List<Booking>> getUserBookings(
+            @PathVariable String email
+    ) {
 
         List<Booking> bookings = bookingService.getUserBookings(email);
 
@@ -43,7 +45,9 @@ public class BookingController {
     // USER NOTIFICATIONS
     // ==========================
     @GetMapping("/notifications/{email}")
-    public ResponseEntity<List<String>> getNotifications(@PathVariable String email) {
+    public ResponseEntity<List<String>> getNotifications(
+            @PathVariable String email
+    ) {
 
         List<Booking> bookings = bookingService.getUserBookings(email);
 
