@@ -31,7 +31,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
-        // If no token → continue
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -39,25 +38,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        // Extract email
-        String email = jwtService.extractEmail(token);
+        try {
+            String email = jwtService.extractEmail(token);
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            User user = userRepository.findByEmail(email).orElse(null);
+                User user = userRepository.findByEmail(email).orElse(null);
 
-            // Validate token against user
-            if (user != null && jwtService.isTokenValid(token)) {
+                if (user != null && jwtService.isTokenValid(token, email)) {
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                user,
-                                null,
-                                Collections.emptyList()
-                        );
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    email,
+                                    null,
+                                    Collections.emptyList()
+                            );
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+
+        } catch (Exception e) {
+            System.out.println("JWT ERROR: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);

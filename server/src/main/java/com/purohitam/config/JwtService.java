@@ -62,19 +62,10 @@ public class JwtService {
     // Validate Token
     // =========================
     public boolean isTokenValid(String token, String email) {
-
         final String tokenEmail = extractEmail(token);
-
-        return (tokenEmail.equals(email) && !isTokenExpired(token));
+        return tokenEmail.equals(email) && !isTokenExpired(token);
     }
 
     // Optional simple validation
-    public boolean isTokenValid(String token) {
 
-        try {
-            return !isTokenExpired(token);
-        } catch (Exception e) {
-            return false;
-        }
-    }
 }
