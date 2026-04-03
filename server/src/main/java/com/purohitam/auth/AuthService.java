@@ -23,14 +23,13 @@ public class AuthService {
         if(userRepository.existsByEmail(request.getEmail())){
             throw new IllegalArgumentException("Email already registered!");
         }
-        if(userRepository.existsByPhone(request.getPhone())){
-            throw new IllegalArgumentException("Phone number already registered!");
-        }
+//        if(userRepository.existsByPhone(request.getPhone())){
+//            throw new IllegalArgumentException("Phone number already registered!");
+//        }
 
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .phone(request.getPhone())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role("USER")
                 .build();

@@ -17,10 +17,10 @@ public class SignupRequest {
     @Size(min = 6)
     private String password;
 
-    @NotBlank
-    @Pattern(
-            regexp = "^[6-9]\\d{9}$",
-            message = "Phone number must be valid 10-digit Indian number"
-    )
-    private String phone;
+//    @NotBlank
+//    @Pattern(
+//            regexp = "^[6-9]\\d{9}$",
+//            message = "Phone number must be valid 10-digit Indian number"
+//    )
+//    private String phone;
 }
