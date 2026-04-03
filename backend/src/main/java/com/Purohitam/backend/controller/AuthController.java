@@ -1,8 +1,10 @@
 package com.Purohitam.backend.controller;
 
+import com.Purohitam.backend.entity.UserEntity;
 import com.Purohitam.backend.io.AuthRequest;
 import com.Purohitam.backend.io.AuthResponse;
 import com.Purohitam.backend.io.ResetPasswordRequest;
+import com.Purohitam.backend.repository.UserRepository;
 import com.Purohitam.backend.service.AppUserDetailsService;
 import com.Purohitam.backend.service.ProfileService;
 import com.Purohitam.backend.util.JwtUtil;
@@ -35,20 +37,23 @@ public class AuthController {
     private final AppUserDetailsService appUserDetailsService;
     private final JwtUtil jwtUtil;
     private final ProfileService profileService;
+    private final UserRepository userRepository;
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request){
         try{
             authenticate(request.getEmail(),request.getPassword());
             final UserDetails userDetails=appUserDetailsService.loadUserByUsername(request.getEmail());
             final String jwtToken=jwtUtil.generateToken(userDetails);
+            // ✅ GET USER FROM DB
+           // UserEntity user = userRepository.findByEmail(request.getEmail())
+                   // .orElseThrow(() -> new RuntimeException("User not found"));
             ResponseCookie cookie=ResponseCookie.from("jwt",jwtToken)
                     .httpOnly(true)
                     .path("/")
                     .maxAge(Duration.ofDays(1))
                     .sameSite("Strict")
                     .build();
-            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,cookie.toString())
-                    .body(new AuthResponse(request.getEmail(),jwtToken));
+            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,cookie.toString()) .body(new AuthResponse(request.getEmail(),jwtToken));
         } catch (BadCredentialsException ex){
             Map<String, Object> error=new HashMap<>();
             error.put("error",true);
