@@ -205,9 +205,9 @@ const UserRoutes = () => (
         <Route
           path="/booking/:id"
           element={
-            <ProtectedRoute>
+            
               <BookingForm />
-            </ProtectedRoute>
+           
           }
         />
         <Route
