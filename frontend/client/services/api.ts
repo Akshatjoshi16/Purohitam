@@ -41,6 +41,11 @@ export const getProfile = async () => {
   const res = await fetch(`${API_URL}/profile`, {
     credentials: "include",
   });
+   if (res.status === 401) {
+    // 🔥 TOKEN EXPIRED
+    console.log("Session expired");
+    return null;
+   }
 
   if (!res.ok) return null;
 
