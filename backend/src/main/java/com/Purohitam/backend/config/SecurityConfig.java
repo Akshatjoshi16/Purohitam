@@ -40,7 +40,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/login","/register","/send-reset-otp","/reset-password","/logout")
-                        .permitAll().anyRequest().authenticated())
+                        .permitAll()
+                        .requestMatchers("/bookings","/bookings/*/cancel","/bookings/*","/bookings/admin/**")
+                        .authenticated().anyRequest().authenticated()
+                )
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
