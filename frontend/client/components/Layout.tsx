@@ -714,7 +714,7 @@ export const Footer = () => (
               { icon: "🕉️", text: "Mahakaleshwar Temple" },
               { icon: "🌊", text: "Kshipra River · Ram Ghat" },
               { icon: "📍", text: "Ujjain, Madhya Pradesh" },
-              { icon: "📞", text: "Contact via Booking Form" },
+              { icon: "📞", text: "purohitamadmin@gmail.com" },
             ].map((item, i) => (
               <li key={i} className="flex items-center gap-2.5 text-[12px] text-white/30">
                 <span className="text-sm">{item.icon}</span>
