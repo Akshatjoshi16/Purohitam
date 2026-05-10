@@ -1,6 +1,6 @@
 package com.Purohitam.backend.service;
 
-import jakarta.websocket.server.ServerEndpoint;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

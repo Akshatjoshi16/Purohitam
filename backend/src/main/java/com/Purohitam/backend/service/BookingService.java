@@ -145,22 +145,21 @@ public class BookingService {
             String notes        = saved.getAdminNotes();
             String price        = saved.getPoojaPrice();
 
-            switch (newStatus) {
-                case CONFIRMED ->
-                        emailService.sendBookingConfirmedEmail(
-                                devoteeEmail, devoteeName, poojaName, date,
-                                saved.getTimeSlot(), saved.getLocation(), price, notes
-                        );
-                case CANCELLED ->
-                        emailService.sendBookingCancelledEmail(
-                                devoteeEmail, devoteeName, poojaName, date, notes
-                        );
-                case COMPLETED ->
-                        emailService.sendBookingCompletedEmail(
-                                devoteeEmail, devoteeName, poojaName
-                        );
-                default -> { /* PENDING — no email needed */ }
+            if (newStatus == BookingStatus.CONFIRMED) {
+                emailService.sendBookingConfirmedEmail(
+                        devoteeEmail, devoteeName, poojaName, date,
+                        saved.getTimeSlot(), saved.getLocation(), price, notes
+                );
+            } else if (newStatus == BookingStatus.CANCELLED) {
+                emailService.sendBookingCancelledEmail(
+                        devoteeEmail, devoteeName, poojaName, date, notes
+                );
+            } else if (newStatus == BookingStatus.COMPLETED) {
+                emailService.sendBookingCompletedEmail(
+                        devoteeEmail, devoteeName, poojaName
+                );
             }
+
         } catch (Exception ignored) { /* don't fail status update if email fails */ }
 
         return toResponse(saved);
