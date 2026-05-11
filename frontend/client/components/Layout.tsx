@@ -1,621 +1,340 @@
-// import React, { useState } from "react";
-// import { Link, useLocation, useNavigate } from "react-router-dom";
-// import { cn } from "@/lib/utils";
-// import {
-//   Menu,
-//   X,
-//   Calendar,
-//   MapPin,
-//   Sparkles,
-//   User,
-//   Bell,
-// } from "lucide-react";
-// import { Button } from "@/components/ui/button";
-// import { useAuth } from "@/hooks/use-auth";
-// import axios from "axios";
-
-// const navLinks = [
-//   { name: "Pooja Booking", path: "/pooja-booking", icon: Calendar },
-//   { name: "Muhurt / Astrology", path: "/muhurt", icon: Sparkles },
-//   { name: "City Guide", path: "/city-guide", icon: MapPin },
-// ];
-
-// export const Header = () => {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const [showNotifications, setShowNotifications] = useState(false);
-
-//   const location = useLocation();
-//   const navigate = useNavigate();
-
-//   const { isAuthenticated, logout, user } = useAuth();
-
-//   const isAdmin = user?.email === "admin@purohitam.com";
-
-//   const notifications = [
-//     "Your Rudrabhishek booking is approved.",
-//     "Satyanarayan Katha is pending approval.",
-//   ];
-
-//   // ✅ VERIFY FUNCTION
-//   const handleVerifyClick = async () => {
-//     try {
-//       await axios.post(
-//         "http://localhost:8080/api/v1.0/send-otp",
-//         {},
-//         { withCredentials: true }
-//       );
-
-//       navigate("/verify-otp");
-//     } catch (err) {
-//       alert("Failed to send OTP");
-//     }
-//   };
-
-//   return (
-//     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
-//       <div className="container flex h-16 items-center justify-between">
-        
-//         {/* LOGO */}
-//         <Link to="/" className="flex items-center space-x-2">
-//           <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center">
-//             <span className="text-white font-cinzel font-bold text-lg">
-//               🔱
-//             </span>
-//           </div>
-//           <span className="font-cinzel font-bold text-xl tracking-wider text-accent hidden sm:inline-block">
-//             PUROHITAM
-//           </span>
-//         </Link>
-
-//         {/* DESKTOP NAV */}
-//         <nav className="hidden md:flex items-center space-x-6">
-//           {navLinks.map((link) => (
-//             <Link
-//               key={link.path}
-//               to={link.path}
-//               className={cn(
-//                 "text-sm font-medium transition-colors hover:text-primary",
-//                 location.pathname === link.path
-//                   ? "text-primary"
-//                   : "text-foreground/70"
-//               )}
-//             >
-//               {link.name}
-//             </Link>
-//           ))}
-
-//           {isAuthenticated ? (
-//             <div className="flex items-center gap-6 ml-6 relative">
-              
-//               {/* 🔥 VERIFY ACCOUNT BUTTON */}
-//               {user && !user.isVerified && (
-//                 <Button
-//                   variant="outline"
-//                   size="sm"
-//                   onClick={handleVerifyClick}
-//                   className="text-xs border-yellow-500 text-yellow-600"
-//                 >
-//                   Verify Account
-//                 </Button>
-//               )}
-
-//               {/* Notification Bell
-//               <div
-//                 className="relative cursor-pointer"
-//                 onClick={() =>
-//                   setShowNotifications(!showNotifications)
-//                 }
-//               >
-//                 <Bell className="w-5 h-5 text-primary" />
-
-//                 {notifications.length > 0 && (
-//                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
-//                     {notifications.length}
-//                   </span>
-//                 )}
-//               </div> */}
-
-//               {/* Notification Dropdown */}
-//               {showNotifications && (
-//                 <div className="absolute right-0 top-12 w-72 bg-white shadow-lg rounded-xl p-4 border z-50">
-//                   <p className="font-semibold mb-3">
-//                     Notifications
-//                   </p>
-
-//                   {notifications.length === 0 ? (
-//                     <p className="text-sm text-gray-500">
-//                       No new notifications
-//                     </p>
-//                   ) : (
-//                     <div className="space-y-3 text-sm">
-//                       {notifications.map((note, index) => (
-//                         <div
-//                           key={index}
-//                           className="p-2 bg-primary/5 rounded-md"
-//                         >
-//                           {note}
-//                         </div>
-//                       ))}
-//                     </div>
-//                   )}
-//                 </div>
-//               )}
-
-//               {/* My Bookings */}
-//               <Link
-//                 to="/my-bookings"
-//                 className="text-sm font-medium hover:text-primary"
-//               >
-//                 My Bookings
-//               </Link>
-
-//               {/* Admin */}
-//               {isAdmin && (
-//                 <Link
-//                   to="/admin"
-//                   className="text-sm font-bold text-primary hover:underline"
-//                 >
-//                   Admin
-//                 </Link>
-//               )}
-
-//               {/* Greeting */}
-//               <span className="text-sm font-cinzel text-primary">
-//                 Namaste, {user?.name}
-//               </span>
-
-//               {/* Logout */}
-//               <Button
-//                 variant="ghost"
-//                 size="sm"
-//                 onClick={logout}
-//                 className="text-xs font-cinzel tracking-widest text-foreground/50"
-//               >
-//                 LOGOUT
-//               </Button>
-//             </div>
-//           ) : (
-//             <Link to="/auth">
-//               <Button
-//                 variant="outline"
-//                 className="ml-4 border-primary text-primary hover:bg-primary/10"
-//               >
-//                 <User className="mr-2 h-4 w-4" />
-//                 Sign In
-//               </Button>
-//             </Link>
-//           )}
-//         </nav>
-
-//         {/* MOBILE MENU BUTTON */}
-//         <div className="flex items-center md:hidden">
-//           <Button
-//             variant="ghost"
-//             size="icon"
-//             onClick={() => setIsOpen(!isOpen)}
-//           >
-//             {isOpen ? <X /> : <Menu />}
-//           </Button>
-//         </div>
-//       </div>
-
-//       {/* MOBILE MENU */}
-//       {isOpen && (
-//         <div className="md:hidden border-b bg-background p-4">
-//           <nav className="flex flex-col space-y-4">
-//             {navLinks.map((link) => (
-//               <Link
-//                 key={link.path}
-//                 to={link.path}
-//                 onClick={() => setIsOpen(false)}
-//                 className={cn(
-//                   "text-base font-medium transition-colors",
-//                   location.pathname === link.path
-//                     ? "text-primary"
-//                     : "text-foreground/70"
-//                 )}
-//               >
-//                 {link.name}
-//               </Link>
-//             ))}
-
-//             {isAuthenticated ? (
-//               <>
-//                 {/* 🔥 VERIFY BUTTON MOBILE */}
-//                 {user && !user.isVerified && (
-//                   <Button
-//                     onClick={() => {
-//                       handleVerifyClick();
-//                       setIsOpen(false);
-//                     }}
-//                     className="w-full bg-yellow-500 text-white"
-//                   >
-//                     Verify Account
-//                   </Button>
-//                 )}
-
-//                 <Link
-//                   to="/my-bookings"
-//                   onClick={() => setIsOpen(false)}
-//                   className="text-primary font-medium"
-//                 >
-//                   My Bookings
-//                 </Link>
-
-//                 {isAdmin && (
-//                   <Link
-//                     to="/admin"
-//                     onClick={() => setIsOpen(false)}
-//                     className="text-primary font-bold"
-//                   >
-//                     Admin Dashboard
-//                   </Link>
-//                 )}
-
-//                 <Button
-//                   onClick={() => {
-//                     logout();
-//                     setIsOpen(false);
-//                   }}
-//                   className="w-full"
-//                 >
-//                   Logout
-//                 </Button>
-//               </>
-//             ) : (
-//               <Link to="/auth" onClick={() => setIsOpen(false)}>
-//                 <Button className="w-full bg-primary text-white">
-//                   Sign In
-//                 </Button>
-//               </Link>
-//             )}
-//           </nav>
-//         </div>
-//       )}
-//     </header>
-//   );
-// };
-// export const Footer = () => (
-//   <footer className="border-t bg-muted/30 py-12 text-center">
-//     <p className="text-sm text-gray-500">
-//       © {new Date().getFullYear()} PUROHITAM. Divine Service Platform.
-//     </p>
-//   </footer>
-// );
-
-// export const Layout = ({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) => {
-//   return (
-//     <div className="min-h-screen flex flex-col">
-//       <Header />
-//       <main className="flex-1">{children}</main>
-//       <Footer />
-//     </div>
-//   );
-// };
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Menu, X, Calendar, MapPin, Sparkles, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Menu, X, Calendar, MapPin, Sparkles, User, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import axios from "axios";
 
 const navLinks = [
-  { name: "Pooja Booking", path: "/pooja-booking", icon: Calendar },
-  { name: "Muhurt", path: "/muhurt", icon: Sparkles },
-  { name: "City Guide", path: "/city-guide", icon: MapPin },
+  { name: "Pooja Booking", path: "/pooja-booking", icon: Calendar, sanskrit: "पूजा"   },
+  { name: "Muhurt",        path: "/muhurt",         icon: Sparkles, sanskrit: "मुहूर्त" },
+  { name: "City Guide",    path: "/city-guide",     icon: MapPin,   sanskrit: "नगर"    },
 ];
 
-/* ─── Decorative SVG divider ─────────────────────────── */
-const OmDivider = () => (
-  <svg width="120" height="20" viewBox="0 0 120 20" fill="none" className="mx-auto opacity-40">
-    <line x1="0" y1="10" x2="45" y2="10" stroke="#C9952A" strokeWidth="0.8" />
-    <text x="50" y="14" fontSize="12" fill="#C9952A" fontFamily="serif">ॐ</text>
-    <line x1="75" y1="10" x2="120" y2="10" stroke="#C9952A" strokeWidth="0.8" />
+/* ─── Yantra SVG ─────────────────────────────────────── */
+const Yantra = ({ size = 32, opacity = 0.15 }: { size?: number; opacity?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 60 60" fill="none" style={{ opacity, flexShrink: 0 }}>
+    <circle cx="30" cy="30" r="28" stroke="#C9952A" strokeWidth="0.6" />
+    <circle cx="30" cy="30" r="20" stroke="#C9952A" strokeWidth="0.4" />
+    <circle cx="30" cy="30" r="12" stroke="#C9952A" strokeWidth="0.4" />
+    <polygon points="30,4 56,48 4,48"  stroke="#C9952A" strokeWidth="0.5" fill="none" />
+    <polygon points="30,56 4,12 56,12" stroke="#C9952A" strokeWidth="0.5" fill="none" />
+    <circle cx="30" cy="30" r="3" fill="#C9952A" opacity="0.6" />
   </svg>
 );
 
-/* ─── Lotus SVG motif ────────────────────────────────── */
-const LotusDivider = () => (
-  <svg width="180" height="24" viewBox="0 0 180 24" fill="none" className="opacity-30">
-    <line x1="0" y1="12" x2="60" y2="12" stroke="#C9952A" strokeWidth="0.6" strokeDasharray="3 4" />
-    <circle cx="90" cy="12" r="3" fill="#C9952A" opacity="0.6" />
-    <circle cx="80" cy="12" r="1.5" fill="#C9952A" opacity="0.4" />
-    <circle cx="100" cy="12" r="1.5" fill="#C9952A" opacity="0.4" />
-    <line x1="120" y1="12" x2="180" y2="12" stroke="#C9952A" strokeWidth="0.6" strokeDasharray="3 4" />
-  </svg>
+/* ─── Shimmer line ───────────────────────────────────── */
+const ShimmerLine = () => (
+  <div className="relative h-px w-full overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#C9952A]/40 to-transparent" />
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#F5C842]/60 to-transparent"
+      style={{ animation: "shimmer 3.5s ease-in-out infinite" }} />
+  </div>
 );
+
+/* ─── Gold text gradient helper ─────────────────────── */
+const goldText: React.CSSProperties = {
+  background: "linear-gradient(135deg, #F5C842 0%, #C9952A 45%, #E8B84B 80%, #F5C842 100%)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+};
 
 /* ═══════════════════════════════════════════════════════ */
 
 export const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen]   = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [hovered, setHovered]  = useState<string | null>(null);
+
+  const location  = useLocation();
+  const navigate  = useNavigate();
   const { isAuthenticated, logout, user } = useAuth();
-  const isAdmin = user?.email === "admin@purohitam.com";
+  const isAdmin   = user?.email === "purohitamadmin@gmail.com";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const fn = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => { setIsOpen(false); }, [location.pathname]);
 
-  const handleVerifyClick = async () => {
+  const handleVerify = async () => {
     try {
       await axios.post("http://localhost:8080/api/v1.0/send-otp", {}, { withCredentials: true });
       navigate("/verify-otp");
-    } catch {
-      alert("Failed to send OTP");
-    }
+    } catch { alert("Failed to send OTP"); }
   };
 
   return (
     <>
-      {/* ── Top sacred strip ─────────────────────────── */}
-      <div className="hidden md:flex items-center justify-center gap-2 bg-[#1A0800] py-1.5 text-[10px] tracking-[3px] font-cinzel text-[#C9952A]/70 uppercase select-none">
-        <span>🔱</span>
-        <span>हर हर महादेव</span>
-        <span className="mx-2 opacity-40">·</span>
-        <span>Mahakaleshwar Jyotirlinga · Ujjain</span>
-        <span className="mx-2 opacity-40">·</span>
-        <span>जय श्री महाकाल</span>
-        <span>🔱</span>
+      {/* ── Top ribbon ─────────────────────────────────── */}
+      <div className="hidden md:block bg-gradient-to-r from-[#0D0400] via-[#180700] to-[#0D0400]">
+        <div className="container mx-auto px-8 flex items-center justify-between h-8">
+          <div className="flex items-center gap-4 text-[9px] tracking-[3px] font-cinzel text-[#C9952A]/45 uppercase">
+            <span className="flex items-center gap-1.5">
+              <span className="w-1 h-1 rounded-full bg-[#C9952A]/50 animate-pulse" />
+              हर हर महादेव
+            </span>
+            <span className="text-[#C9952A]/15">·</span>
+            <span>Mahakaleshwar Jyotirlinga · Ujjain</span>
+          </div>
+          <div className="flex items-center gap-4 text-[9px] tracking-[3px] font-cinzel text-[#C9952A]/45 uppercase">
+            <span>500+ Rituals Performed</span>
+            <span className="text-[#C9952A]/15">·</span>
+            <span className="flex items-center gap-1.5">
+              जय श्री महाकाल
+              <span className="w-1 h-1 rounded-full bg-[#C9952A]/50 animate-pulse" style={{ animationDelay: "0.7s" }} />
+            </span>
+          </div>
+        </div>
       </div>
 
-      {/* ── Main header ──────────────────────────────── */}
-      <header
-        className={cn(
-          "sticky top-0 z-50 w-full transition-all duration-300",
-          scrolled
-            ? "bg-[#0F0500]/97 backdrop-blur-xl shadow-[0_2px_30px_rgba(0,0,0,0.5)] border-b border-[#C9952A]/15"
-            : "bg-[#0F0500] border-b border-[#C9952A]/20"
-        )}
-      >
-        {/* Grain texture overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.025] pointer-events-none"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-          }}
-        />
+      {/* ── Main header ───────────────────────────────── */}
+      <header className={cn(
+        "sticky top-0 z-50 w-full transition-all duration-500",
+        scrolled
+          ? "bg-[#070100]/98 backdrop-blur-2xl shadow-[0_8px_48px_rgba(0,0,0,0.7)] border-b border-[#C9952A]/18"
+          : "bg-gradient-to-b from-[#0A0200] to-[#0F0500] border-b border-[#C9952A]/12"
+      )}>
+        {/* Grain */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.025]"
+          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }} />
 
-        <div className="relative container flex h-[68px] items-center justify-between px-4 md:px-8">
+        {/* Top warm glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-px bg-gradient-to-r from-transparent via-[#C9952A]/45 to-transparent pointer-events-none" />
 
-          {/* ── Logo ─────────────────────────────────── */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="relative flex items-center justify-center w-10 h-10">
-              {/* Rotating ring */}
-              <div className="absolute inset-0 rounded-full border border-[#C9952A]/40 group-hover:border-[#C9952A]/70 transition-colors duration-500" />
-              <div className="absolute inset-[3px] rounded-full border border-[#C9952A]/20" />
-              <span className="text-[18px] z-10 select-none">🔱</span>
+        <div className="container mx-auto flex h-[70px] items-center justify-between px-4 md:px-8 relative">
+
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3.5 group flex-shrink-0">
+            <div className="relative w-11 h-11 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#C9952A]/15 to-transparent border border-[#C9952A]/25 group-hover:border-[#C9952A]/55 group-hover:shadow-[0_0_18px_rgba(201,149,42,0.2)] transition-all duration-500" />
+              <Yantra size={26} opacity={0.45} />
+              <span className="absolute text-[16px] select-none" style={{ filter: "drop-shadow(0 0 8px rgba(201,149,42,0.5))" }}>🔱</span>
             </div>
             <div className="flex flex-col leading-none">
-              <span className="font-cinzel font-bold text-[18px] tracking-[0.18em] text-white group-hover:text-[#F5C842] transition-colors duration-300">
+              <span className="font-cinzel font-bold text-[18px] tracking-[0.2em]" style={goldText}>
                 PUROHITAM
               </span>
-              <span className="text-[9px] tracking-[0.3em] text-[#C9952A]/50 uppercase font-light mt-0.5 hidden sm:block">
+              <span className="text-[8px] tracking-[0.33em] text-[#C9952A]/38 uppercase font-light mt-0.5 hidden sm:block">
                 वैदिक सेवा · Ujjain
               </span>
             </div>
           </Link>
 
-          {/* ── Desktop nav ──────────────────────────── */}
-          <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => {
-              const active = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={cn(
-                    "relative group flex items-center gap-1.5 px-4 py-2 font-cinzel text-[11px] tracking-[2px] uppercase transition-all duration-200",
-                    active ? "text-[#F5C842]" : "text-[#C9952A]/70 hover:text-[#F5C842]"
-                  )}
-                >
-                  <link.icon className="w-3 h-3 opacity-70" />
-                  {link.name}
-                  {/* Active underline */}
-                  <span
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center">
+            <div className="flex items-center bg-white/[0.025] border border-[#C9952A]/8 rounded-2xl px-2 py-1.5 gap-0.5">
+              {navLinks.map((link) => {
+                const active = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    onMouseEnter={() => setHovered(link.path)}
+                    onMouseLeave={() => setHovered(null)}
                     className={cn(
-                      "absolute bottom-0 left-4 right-4 h-[1px] bg-[#C9952A] transition-all duration-300",
-                      active ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0 group-hover:opacity-50 group-hover:scale-x-100"
+                      "relative group flex items-center gap-2 px-4 py-2 rounded-xl font-cinzel text-[10px] tracking-[2px] uppercase transition-all duration-250 overflow-hidden",
+                      active
+                        ? "bg-gradient-to-r from-[#C9952A]/18 to-[#C9952A]/6 text-[#F5C842] border border-[#C9952A]/22"
+                        : "text-[#C9952A]/52 hover:text-[#F5C842] border border-transparent"
                     )}
-                  />
-                </Link>
-              );
-            })}
+                  >
+                    {!active && (
+                      <span className="absolute inset-0 bg-gradient-to-r from-[#C9952A]/0 to-[#C9952A]/7 opacity-0 group-hover:opacity-100 transition-opacity duration-250 rounded-xl" />
+                    )}
+                    <link.icon className={cn(
+                      "w-3 h-3 relative z-10 transition-colors duration-250",
+                      active ? "text-[#F5C842]" : "text-[#C9952A]/45 group-hover:text-[#C9952A]/80"
+                    )} />
+                    <span className="relative z-10">{link.name}</span>
+                    {/* Sanskrit peek on hover */}
+                    <span className={cn(
+                      "relative z-10 text-[7px] text-[#C9952A]/28 font-light transition-all duration-300 overflow-hidden",
+                      hovered === link.path ? "max-w-[28px] opacity-100" : "max-w-0 opacity-0"
+                    )}>
+                      {link.sanskrit}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
           </nav>
 
-          {/* ── Desktop auth ─────────────────────────── */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Desktop auth */}
+          <div className="hidden md:flex items-center gap-3">
             {isAuthenticated ? (
               <>
-                {/* Verify badge */}
-                {user && !user.isVerified && (
-                  <button
-                    onClick={handleVerifyClick}
-                    className="flex items-center gap-1.5 text-[10px] font-cinzel tracking-[2px] uppercase border border-yellow-600/60 text-yellow-500 hover:bg-yellow-600/10 px-3 py-1.5 rounded-full transition-all"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
+                {!user?.isVerified && (
+                  <button onClick={handleVerify}
+                    className="flex items-center gap-1.5 text-[9px] font-cinzel tracking-[2px] uppercase px-3 py-1.5 rounded-full border border-amber-500/35 text-amber-400 bg-amber-400/5 hover:bg-amber-400/12 transition-all duration-200">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                     Verify Account
                   </button>
                 )}
 
-                {/* My Bookings */}
-                <Link
-                  to="/my-bookings"
-                  className="text-[11px] font-cinzel tracking-[2px] uppercase text-[#C9952A]/70 hover:text-[#F5C842] transition-colors"
-                >
+                <Link to="/my-bookings"
+                  className="group flex items-center gap-1.5 text-[10px] font-cinzel tracking-[2px] uppercase text-[#C9952A]/55 hover:text-[#F5C842] transition-colors duration-200">
+                  <Calendar className="w-3 h-3 opacity-60 group-hover:opacity-100 transition-opacity" />
                   My Bookings
                 </Link>
 
-                {/* Admin */}
                 {isAdmin && (
-                  <Link
-                    to="/admin"
-                    className="text-[11px] font-cinzel tracking-[2px] uppercase text-red-400 hover:text-red-300 transition-colors"
-                  >
-                    Admin
+                  <Link to="/admin"
+                    className="text-[9px] font-cinzel tracking-[2px] uppercase text-orange-400/65 hover:text-orange-300 border border-orange-500/18 hover:border-orange-400/38 px-3 py-1.5 rounded-full transition-all duration-200 bg-orange-500/4 hover:bg-orange-500/9">
+                    Admin Panel
                   </Link>
                 )}
 
-                {/* Separator */}
-                <div className="w-px h-4 bg-[#C9952A]/20" />
+                <div className="w-px h-5 bg-[#C9952A]/12" />
 
-                {/* User greeting */}
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-[#C9952A]/15 border border-[#C9952A]/30 flex items-center justify-center">
-                    <span className="text-[#C9952A] text-xs font-cinzel font-bold">
-                      {user?.name?.[0]?.toUpperCase()}
-                    </span>
+                {/* Avatar */}
+                <div className="flex items-center gap-2.5 group">
+                  <div className="relative">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#C9952A]/28 to-[#8B6914]/15 border border-[#C9952A]/35 flex items-center justify-center group-hover:border-[#C9952A]/65 group-hover:shadow-[0_0_14px_rgba(201,149,42,0.25)] transition-all duration-300">
+                      <span className="text-[#F5C842] text-xs font-cinzel font-bold">{user?.name?.[0]?.toUpperCase()}</span>
+                    </div>
+                    <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-[1.5px] border-[#0F0500]" />
                   </div>
-                  <span className="text-[11px] font-cinzel text-[#C9952A]/80 tracking-wide max-w-[100px] truncate">
-                    {user?.name}
-                  </span>
+                  <div className="flex flex-col leading-none">
+                    <span className="text-[10px] font-cinzel text-[#C9952A]/75 tracking-wide max-w-[80px] truncate">{user?.name}</span>
+                    <span className="text-[7.5px] text-[#C9952A]/28 tracking-widest uppercase">Devotee</span>
+                  </div>
                 </div>
 
-                {/* Logout */}
-                <button
-                  onClick={logout}
-                  className="text-[10px] font-cinzel tracking-[2px] uppercase text-white/30 hover:text-white/60 transition-colors border border-white/10 hover:border-white/25 px-3 py-1.5 rounded-full"
-                >
+                <button onClick={logout}
+                  className="text-[9px] font-cinzel tracking-[2px] uppercase text-white/22 hover:text-red-400/80 border border-white/7 hover:border-red-400/25 px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-red-400/4">
                   Logout
                 </button>
               </>
             ) : (
               <Link to="/auth">
-                <button className="flex items-center gap-2 font-cinzel text-[11px] tracking-[2.5px] uppercase bg-gradient-to-r from-[#C9952A] to-[#E8B84B] text-[#1A0800] font-semibold px-5 py-2 rounded-full hover:shadow-[0_0_20px_rgba(201,149,42,0.4)] transition-all duration-300 hover:scale-[1.02]">
-                  <User className="w-3.5 h-3.5" />
-                  Sign In
+                <button className="group relative flex items-center gap-2 font-cinzel text-[10px] tracking-[2.5px] uppercase px-5 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:shadow-[0_0_28px_rgba(201,149,42,0.38)] hover:scale-[1.025]">
+                  <span className="absolute inset-0" style={{ background: "linear-gradient(135deg, #C9952A, #E8B84B, #C9952A, #F5C842)", backgroundSize: "200%" }} />
+                  <User className="w-3.5 h-3.5 relative z-10 text-[#1A0800]" />
+                  <span className="relative z-10 text-[#1A0800] font-bold">Sign In</span>
+                  <ChevronRight className="w-3 h-3 relative z-10 text-[#1A0800] group-hover:translate-x-0.5 transition-transform duration-200" />
                 </button>
               </Link>
             )}
           </div>
 
-          {/* ── Mobile menu toggle ───────────────────── */}
+          {/* Mobile toggle */}
           <button
-            className="md:hidden flex items-center justify-center w-9 h-9 rounded-full border border-[#C9952A]/30 text-[#C9952A] hover:border-[#C9952A]/60 transition-colors"
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-[#C9952A]/22 text-[#C9952A] hover:border-[#C9952A]/48 hover:bg-[#C9952A]/5 transition-all duration-200"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
           >
             {isOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
         </div>
 
-        {/* ── Mobile menu ──────────────────────────── */}
-        <div
-          className={cn(
-            "md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-[#C9952A]/15",
-            isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-          )}
-        >
-          <nav className="bg-[#0F0500] px-6 py-6 flex flex-col gap-1">
+        <ShimmerLine />
+
+        {/* Mobile menu */}
+        <div className={cn(
+          "md:hidden overflow-hidden transition-all duration-350 ease-in-out",
+          isOpen ? "max-h-[620px] opacity-100" : "max-h-0 opacity-0"
+        )}>
+          <div className="bg-gradient-to-b from-[#0B0200] to-[#110500] px-5 py-5 space-y-1">
 
             {navLinks.map((link) => {
               const active = location.pathname === link.path;
               return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
+                <Link key={link.path} to={link.path} onClick={() => setIsOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl font-cinzel text-[11px] tracking-[2px] uppercase transition-all",
+                    "flex items-center justify-between px-4 py-3.5 rounded-xl font-cinzel text-[11px] tracking-[2px] uppercase transition-all duration-200",
                     active
-                      ? "bg-[#C9952A]/10 text-[#F5C842] border border-[#C9952A]/25"
-                      : "text-[#C9952A]/60 hover:text-[#F5C842] hover:bg-white/5"
-                  )}
-                >
-                  <link.icon className="w-3.5 h-3.5" />
-                  {link.name}
+                      ? "bg-gradient-to-r from-[#C9952A]/14 to-[#C9952A]/4 text-[#F5C842] border border-[#C9952A]/18"
+                      : "text-[#C9952A]/50 hover:text-[#F5C842] hover:bg-white/[0.035] border border-transparent"
+                  )}>
+                  <div className="flex items-center gap-3">
+                    <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center", active ? "bg-[#C9952A]/12" : "bg-white/[0.04]")}>
+                      <link.icon className="w-3.5 h-3.5" />
+                    </div>
+                    {link.name}
+                  </div>
+                  <span className="text-[#C9952A]/22 text-[10px]">{link.sanskrit}</span>
                 </Link>
               );
             })}
 
-            {/* Mobile divider */}
-            <div className="my-3 flex items-center gap-3">
-              <div className="h-px flex-1 bg-[#C9952A]/15" />
-              <span className="text-[#C9952A]/40 text-xs">✦</span>
-              <div className="h-px flex-1 bg-[#C9952A]/15" />
+            <div className="py-3 px-2 flex items-center gap-3">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#C9952A]/18 to-transparent" />
+              <Yantra size={14} opacity={0.25} />
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#C9952A]/18 to-transparent" />
             </div>
 
             {isAuthenticated ? (
               <>
-                {/* Greeting */}
-                <div className="flex items-center gap-3 px-4 py-2">
-                  <div className="w-8 h-8 rounded-full bg-[#C9952A]/15 border border-[#C9952A]/30 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[#C9952A] text-sm font-cinzel font-bold">
-                      {user?.name?.[0]?.toUpperCase()}
-                    </span>
+                {/* User card */}
+                <div className="flex items-center gap-3 px-4 py-3 bg-[#C9952A]/4 border border-[#C9952A]/10 rounded-xl mb-1">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#C9952A]/28 to-transparent border border-[#C9952A]/35 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[#F5C842] text-sm font-cinzel font-bold">{user?.name?.[0]?.toUpperCase()}</span>
                   </div>
                   <div>
-                    <p className="text-[11px] font-cinzel text-white/80 tracking-wide">{user?.name}</p>
-                    <p className="text-[9px] text-[#C9952A]/40 tracking-widest">Devotee</p>
+                    <p className="text-[11px] font-cinzel text-white/75 tracking-wide">{user?.name}</p>
+                    <p className="text-[8px] text-[#C9952A]/35 tracking-widest uppercase">Devotee · Online</p>
                   </div>
+                  <span className="ml-auto w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
                 </div>
 
-                {/* Verify */}
-                {user && !user.isVerified && (
-                  <button
-                    onClick={() => { handleVerifyClick(); setIsOpen(false); }}
-                    className="mx-4 mt-1 flex items-center justify-center gap-2 text-[10px] font-cinzel tracking-[2px] uppercase bg-yellow-600/15 border border-yellow-600/40 text-yellow-400 py-2.5 rounded-xl transition-all"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
+                {!user?.isVerified && (
+                  <button onClick={() => { handleVerify(); setIsOpen(false); }}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-cinzel text-[10px] tracking-[2px] uppercase bg-amber-400/8 border border-amber-400/25 text-amber-400 hover:bg-amber-400/14 transition-all">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                     Verify Account
                   </button>
                 )}
 
-                <Link
-                  to="/my-bookings"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl font-cinzel text-[11px] tracking-[2px] uppercase text-[#C9952A]/60 hover:text-[#F5C842] hover:bg-white/5 transition-all"
-                >
-                  <Calendar className="w-3.5 h-3.5" />
+                <Link to="/my-bookings" onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl font-cinzel text-[11px] tracking-[2px] uppercase text-[#C9952A]/50 hover:text-[#F5C842] hover:bg-white/[0.035] border border-transparent transition-all">
+                  <div className="w-7 h-7 rounded-lg bg-white/[0.04] flex items-center justify-center">
+                    <Calendar className="w-3.5 h-3.5" />
+                  </div>
                   My Bookings
                 </Link>
 
                 {isAdmin && (
-                  <Link
-                    to="/admin"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl font-cinzel text-[11px] tracking-[2px] uppercase text-red-400/70 hover:text-red-300 hover:bg-white/5 transition-all"
-                  >
-                    Admin Dashboard
+                  <Link to="/admin" onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl font-cinzel text-[11px] tracking-[2px] uppercase text-orange-400/65 hover:text-orange-300 hover:bg-orange-500/5 border border-transparent transition-all">
+                    <div className="w-7 h-7 rounded-lg bg-orange-500/8 flex items-center justify-center">
+                      <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+                    </div>
+                    Admin Panel
                   </Link>
                 )}
 
-                <button
-                  onClick={() => { logout(); setIsOpen(false); }}
-                  className="mx-0 mt-1 flex items-center justify-center gap-2 text-[10px] font-cinzel tracking-[2px] uppercase border border-white/10 text-white/40 py-2.5 rounded-xl hover:border-white/20 hover:text-white/60 transition-all"
-                >
+                <button onClick={() => { logout(); setIsOpen(false); }}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-cinzel text-[10px] tracking-[2px] uppercase border border-white/7 text-white/28 hover:border-red-400/25 hover:text-red-400/80 hover:bg-red-400/4 transition-all mt-1">
                   Logout
                 </button>
               </>
             ) : (
               <Link to="/auth" onClick={() => setIsOpen(false)}>
-                <button className="w-full flex items-center justify-center gap-2 font-cinzel text-[11px] tracking-[2.5px] uppercase bg-gradient-to-r from-[#C9952A] to-[#E8B84B] text-[#1A0800] font-semibold py-3 rounded-xl hover:shadow-[0_0_20px_rgba(201,149,42,0.3)] transition-all">
+                <button className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-cinzel text-[11px] tracking-[2.5px] uppercase font-bold text-[#1A0800] hover:shadow-[0_0_20px_rgba(201,149,42,0.3)] transition-all"
+                  style={{ background: "linear-gradient(135deg, #C9952A, #E8B84B, #C9952A)" }}>
                   <User className="w-3.5 h-3.5" />
-                  Sign In
+                  Sign In to Book
                 </button>
               </Link>
             )}
 
-            {/* Bottom Sanskrit */}
-            <p className="text-center text-[9px] text-[#C9952A]/25 font-cinzel tracking-[3px] uppercase mt-4">
-              हर हर महादेव
+            <p className="text-center text-[8px] text-[#C9952A]/18 font-cinzel tracking-[4px] uppercase pt-2">
+              हर हर महादेव 🔱
             </p>
-          </nav>
+          </div>
         </div>
       </header>
+
+      <style>{`
+        @keyframes shimmer {
+          0%   { transform: translateX(-100%); opacity: 0.4; }
+          50%  { opacity: 1; }
+          100% { transform: translateX(100%); opacity: 0.4; }
+        }
+      `}</style>
     </>
   );
 };
@@ -623,118 +342,137 @@ export const Header = () => {
 /* ════════════════════════════════════════════════════════ */
 
 export const Footer = () => (
-  <footer className="relative overflow-hidden bg-[#0A0400] border-t border-[#C9952A]/15">
-
+  <footer className="relative overflow-hidden bg-[#050100]">
     {/* Grain */}
-    <div
-      className="absolute inset-0 opacity-[0.03] pointer-events-none"
-      style={{
-        backgroundImage:
-          "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
-      }}
-    />
+    <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+      style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }} />
 
-    {/* Mandala watermark */}
-    <div className="absolute right-0 bottom-0 opacity-[0.04] pointer-events-none select-none" aria-hidden>
-      <svg width="300" height="300" viewBox="0 0 300 300" fill="none">
-        {[140, 110, 80, 50, 20].map((r) => (
-          <circle key={r} cx="150" cy="150" r={r} stroke="#C9952A" strokeWidth="0.5" />
-        ))}
-        {[0, 45, 90, 135].map((angle) => (
-          <line
-            key={angle}
-            x1="150" y1="10" x2="150" y2="290"
-            stroke="#C9952A" strokeWidth="0.4"
-            transform={`rotate(${angle} 150 150)`}
-          />
-        ))}
-      </svg>
+    {/* Radial glow */}
+    <div className="absolute inset-0 pointer-events-none"
+      style={{ background: "radial-gradient(ellipse 70% 50% at 50% 100%, rgba(201,149,42,0.04) 0%, transparent 65%)" }} />
+
+    {/* Large background yantra */}
+    <div className="absolute right-6 bottom-6 pointer-events-none select-none opacity-[0.035]">
+      <Yantra size={260} opacity={1} />
     </div>
 
-    <div className="relative container mx-auto px-6 pt-12 pb-6">
+    <ShimmerLine />
 
-      {/* Top section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-[#C9952A]/10">
+    <div className="relative container mx-auto px-6 pt-14 pb-8">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-[#C9952A]/7">
 
         {/* Brand */}
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full border border-[#C9952A]/40 flex items-center justify-center text-lg">
-              🔱
+        <div className="md:col-span-4 flex flex-col gap-5">
+          <Link to="/" className="flex items-center gap-3 group w-fit">
+            <div className="w-10 h-10 rounded-full border border-[#C9952A]/28 flex items-center justify-center group-hover:border-[#C9952A]/55 group-hover:shadow-[0_0_16px_rgba(201,149,42,0.18)] transition-all duration-300">
+              <span className="text-lg">🔱</span>
             </div>
             <div>
-              <span className="font-cinzel font-bold text-[16px] tracking-[0.2em] text-white block">
-                PUROHITAM
-              </span>
-              <span className="text-[9px] tracking-[0.3em] text-[#C9952A]/40 uppercase">
-                वैदिक सेवा · Ujjain
-              </span>
+              <span className="font-cinzel font-bold text-[16px] tracking-[0.2em] block" style={goldText}>PUROHITAM</span>
+              <span className="text-[8px] tracking-[0.32em] text-[#C9952A]/30 uppercase">वैदिक सेवा · Ujjain</span>
             </div>
+          </Link>
+
+          <p className="text-[12px] text-white/28 leading-relaxed max-w-[230px]">
+            Authentic Vedic ceremonies performed by learned pandits at the sacred city of Mahakaleshwar — one of India's twelve Jyotirlingas.
+          </p>
+
+          <div className="border-l-2 border-[#C9952A]/20 pl-4">
+            <p className="text-[11px] italic text-[#C9952A]/45 font-cinzel mb-0.5">"श्रद्धावान् लभते ज्ञानम्"</p>
+            <p className="text-[9px] text-[#C9952A]/22 tracking-wide">The faithful one obtains wisdom — Gita 4.39</p>
           </div>
-          <p className="text-[12px] text-white/35 leading-relaxed max-w-[220px]">
-            Authentic Vedic ceremonies performed by learned pandits at the sacred city of Mahakaleshwar.
-          </p>
-          <p className="text-[11px] italic text-[#C9952A]/40 font-cinzel">
-            "श्रद्धावान् लभते ज्ञानम्"
-          </p>
+
+          <div className="flex gap-6">
+            {[
+              { num: "500+", label: "Rituals" },
+              { num: "4.9★", label: "Rating"  },
+              { num: "15+",  label: "Years"   },
+            ].map(s => (
+              <div key={s.label}>
+                <p className="font-cinzel font-bold text-[14px] text-[#C9952A]">{s.num}</p>
+                <p className="text-[9px] text-white/22 tracking-[2px] uppercase mt-0.5">{s.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Quick links */}
-        <div>
-          <p className="font-cinzel text-[10px] tracking-[3px] uppercase text-[#C9952A]/50 mb-5">
-            ✦ Navigate
+        {/* Navigate */}
+        <div className="md:col-span-3">
+          <p className="font-cinzel text-[9px] tracking-[3px] uppercase text-[#C9952A]/38 mb-6 flex items-center gap-2">
+            <span className="w-3 h-px bg-[#C9952A]/28 block" />Navigate
           </p>
-          <ul className="space-y-3">
+          <ul className="space-y-3.5">
             {[
-              { label: "Pooja Booking", path: "/pooja-booking" },
-              { label: "Muhurt / Astrology", path: "/muhurt" },
-              { label: "City Guide", path: "/city-guide" },
-              { label: "My Bookings", path: "/my-bookings" },
-            ].map((l) => (
+              { label: "Pooja Booking",     path: "/pooja-booking" },
+              { label: "Muhurt / Astrology", path: "/muhurt"        },
+              { label: "City Guide",         path: "/city-guide"    },
+              { label: "My Bookings",        path: "/my-bookings"   },
+            ].map(l => (
               <li key={l.path}>
-                <Link
-                  to={l.path}
-                  className="flex items-center gap-2 text-[12px] font-cinzel tracking-wide text-white/35 hover:text-[#C9952A] transition-colors group"
-                >
-                  <span className="w-1 h-1 rounded-full bg-[#C9952A]/30 group-hover:bg-[#C9952A] transition-colors" />
+                <Link to={l.path}
+                  className="group flex items-center gap-2.5 text-[12px] font-cinzel tracking-wide text-white/28 hover:text-[#C9952A] transition-all duration-200">
+                  <span className="w-1 h-1 rounded-full bg-[#C9952A]/22 group-hover:bg-[#C9952A] group-hover:shadow-[0_0_5px_rgba(201,149,42,0.5)] transition-all duration-200" />
                   {l.label}
+                  <ChevronRight className="w-3 h-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
                 </Link>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Sacred info */}
-        <div>
-          <p className="font-cinzel text-[10px] tracking-[3px] uppercase text-[#C9952A]/50 mb-5">
-            ✦ Sacred City
+        {/* Sacred city */}
+        <div className="md:col-span-3">
+          <p className="font-cinzel text-[9px] tracking-[3px] uppercase text-[#C9952A]/38 mb-6 flex items-center gap-2">
+            <span className="w-3 h-px bg-[#C9952A]/28 block" />Sacred City
           </p>
-          <ul className="space-y-3">
+          <ul className="space-y-3.5">
             {[
               { icon: "🕉️", text: "Mahakaleshwar Temple" },
               { icon: "🌊", text: "Kshipra River · Ram Ghat" },
               { icon: "📍", text: "Ujjain, Madhya Pradesh" },
-              { icon: "📞", text: "purohitamadmin@gmail.com" },
+              { icon: "✉️", text: "purohitamadmin@gmail.com" },
             ].map((item, i) => (
-              <li key={i} className="flex items-center gap-2.5 text-[12px] text-white/30">
-                <span className="text-sm">{item.icon}</span>
-                <span className="font-cinzel tracking-wide">{item.text}</span>
+              <li key={i} className="flex items-center gap-3 text-[12px] text-white/22 group">
+                <span className="text-sm opacity-55 flex-shrink-0">{item.icon}</span>
+                <span className="font-cinzel tracking-wide group-hover:text-white/38 transition-colors duration-200">{item.text}</span>
               </li>
             ))}
           </ul>
         </div>
+
+        {/* Book now card */}
+        <div className="md:col-span-2">
+          <p className="font-cinzel text-[9px] tracking-[3px] uppercase text-[#C9952A]/38 mb-6 flex items-center gap-2">
+            <span className="w-3 h-px bg-[#C9952A]/28 block" />Book
+          </p>
+          <Link to="/pooja-booking">
+            <div className="group relative overflow-hidden rounded-2xl border border-[#C9952A]/16 hover:border-[#C9952A]/38 transition-all duration-300 cursor-pointer hover:shadow-[0_0_22px_rgba(201,149,42,0.1)]">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#C9952A]/6 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="p-4 relative">
+                <div className="w-8 h-8 rounded-lg bg-[#C9952A]/8 border border-[#C9952A]/16 flex items-center justify-center mb-3">
+                  <Calendar className="w-4 h-4 text-[#C9952A]" />
+                </div>
+                <p className="font-cinzel text-[11px] tracking-[1px] text-white/42 mb-1">Book a Pooja</p>
+                <p className="text-[10px] text-white/22 leading-relaxed">Connect with Vedic pandits at Mahakal</p>
+                <div className="flex items-center gap-1 mt-3 text-[#C9952A]/42 group-hover:text-[#C9952A] transition-colors duration-200">
+                  <span className="text-[9px] font-cinzel tracking-[2px] uppercase">Explore</span>
+                  <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-200" />
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
       </div>
 
-      {/* Bottom bar */}
+      {/* Bottom */}
       <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <p className="text-[10px] font-cinzel tracking-[2px] text-white/20 uppercase">
-          © {new Date().getFullYear()} Purohitam · All Rights Reserved
+        <p className="text-[9px] font-cinzel tracking-[2.5px] text-white/14 uppercase">
+          © {new Date().getFullYear()} Purohitam · All Rights Reserved · Ujjain
         </p>
-
-        <div className="flex items-center gap-2 text-[#C9952A]/20">
-          <span className="text-[10px] font-cinzel tracking-[2px]">हर हर महादेव</span>
-          <span className="text-xs">🔱</span>
-          <span className="text-[10px] font-cinzel tracking-[2px]">जय श्री महाकाल</span>
+        <div className="flex items-center gap-3">
+          <span className="text-[9px] font-cinzel tracking-[2.5px] text-[#C9952A]/18 uppercase">हर हर महादेव</span>
+          <Yantra size={16} opacity={0.18} />
+          <span className="text-[9px] font-cinzel tracking-[2.5px] text-[#C9952A]/18 uppercase">जय श्री महाकाल</span>
         </div>
       </div>
     </div>
